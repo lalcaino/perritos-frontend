@@ -71,24 +71,24 @@ jobs:
           script: |
             # Login en Docker Hub desde la EC2
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | \
-              docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+              sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
             # Descargar la imagen más reciente
-            docker pull ${{ env.IMAGE_NAME }}:latest
+            sudo docker pull ${{ env.IMAGE_NAME }}:latest
 
             # Detener y eliminar el contenedor anterior si existe
-            docker stop tienda-frontend || true
-            docker rm   tienda-frontend || true
+            sudo docker stop tienda-frontend || true
+            sudo docker rm   tienda-frontend || true
 
             # Levantar el nuevo contenedor
-            docker run -d \
+            sudo docker run -d \
               --name tienda-frontend \
               --restart unless-stopped \
               -p 80:80 \
               ${{ env.IMAGE_NAME }}:latest
 
             # Verificar que el contenedor está corriendo
-            docker ps | grep tienda-frontend
+            sudo docker ps | grep tienda-frontend
 
             # Limpiar imágenes antiguas para liberar espacio
-            docker image prune -f
+            sudo docker image prune -f
